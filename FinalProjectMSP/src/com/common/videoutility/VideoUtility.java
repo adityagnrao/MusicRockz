@@ -7,7 +7,9 @@ public class VideoUtility {
 	public VideoObjectSegmentation videoobjects;
 	public VisualFeatureLibrary library;
 	public ParameterTracker trackerelems;
-	
+	public ImageSearchEngine SearchEngine;
+	public PixelArray Converter;
+	public Debugger TODEBUGS;
 	
 	public VideoUtility() {
 		
@@ -16,5 +18,8 @@ public class VideoUtility {
 		videoobjects = new VideoObjectSegmentation();
 		library = new VisualFeatureLibrary();
 		trackerelems = new ParameterTracker();
+		SearchEngine = new ImageSearchEngine();
+		Converter = new PixelArray();
+		TODEBUGS = new Debugger();
 	}
 }
