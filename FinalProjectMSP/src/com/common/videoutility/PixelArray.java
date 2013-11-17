@@ -98,33 +98,9 @@ public class PixelArray {
 		return DestImage;
 	}
 	
-	public Pixel [][] ConverttoPixelArray(String fname, int width, int height) throws IOException
+	public Pixel [][] ConverttoPixelArray(BufferedImage img, int width, int height)
 	{
-		//BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
-		File file = new File(fname);
-		BufferedImage img = ImageIO.read(file);
-
-		int[] pixels = img.getRGB(0,0, img.getWidth(), img.getHeight(), null, 0, img.getWidth());
-
-			int ind = 0;
-			for(int y = 0; y < height; y++){
-
-				for(int x = 0; x < width; x++){
-
-					byte a = 0;
-					byte r = (byte) pixels[ind];
-					byte g = (byte) pixels[ind];
-					byte b = (byte) pixels[ind];  
-
-					int pix = 0xff000000 | ((r & 0xff) << 16) | ((g & 0xff) << 8) | (b & 0xff);
-					//int pix = ((a << 24) + (r << 16) + (g << 8) + b);
-					img.setRGB(x,y,pix);
-					ind++;
-				}
-			}
-
-
-
+	
 		Pixel RGBimg[][] = new Pixel[height][width];
 
 		for(int y = 0; y < height; y++)
@@ -138,13 +114,26 @@ public class PixelArray {
 
 			}
 		
-		JFrame Inputframe = new JFrame();
-		JLabel Inputlabel = new JLabel(new ImageIcon(img));
-		Inputframe.getContentPane().add(Inputlabel, BorderLayout.CENTER);
-		Inputframe.pack();
-		Inputframe.setVisible(true);
-
 		return RGBimg;
 	}
+	
+	public BufferedImage ConverttoBufferedImage(Pixel [][] img, int width, int height)
+	{
+	
+		BufferedImage Outputimg = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
+		for(int y = 0; y < height; y++)
+			for(int x = 0; x < width; x++)
+			{
+				int pix = 0xff000000 | (((int)(img[y][x].getX()) & 0xff) << 16) | (((int)(img[y][x].getY()) & 0xff) << 8) | ((int)(img[y][x].getZ()) & 0xff);
+				Outputimg.setRGB(x, y, pix);
+			}
+		
+		return Outputimg;
+	}
+	
+	public double EuclideanDistance(Pixel p1, Pixel p2)
+	{
+		return Math.sqrt((p1.i - p2.i)*(p1.i-p2.i) + (p1.j - p2.j)*(p1.j-p2.j));
+	}
 }

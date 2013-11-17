@@ -1,13 +1,27 @@
 package com.server.offlineprocess;
 
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.common.videoutility.Pixel;
 
 public class VideoShot {
 
-	int frameNo;
-	Pixel [][]RGBstream;
+	int VideoID;
+	List<BufferedImage>Frames = new ArrayList<BufferedImage>();
 	
-	public VideoShot(int width, int height) {
-		RGBstream = new Pixel[height][width];
+	
+	public VideoShot(int index) {
+		VideoID = index;
+	}
+	
+	public int getVideoID()
+	{
+		return VideoID;
+	}
+	
+	public List<BufferedImage> getListofFrames(){
+		return this.Frames;
 	}
 }
