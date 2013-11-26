@@ -4,7 +4,7 @@ public class VideoUtility {
 	
 	public MPEG4encoder encoder;
 	public SceneChangeDetector scenechangedetector;
-	public VideoObjectSegmentation videoobjects;
+	public ImageComparator videoobjects;
 	public VisualFeatureLibrary library;
 	public ParameterTracker trackerelems;
 	public ImageSearchEngine SearchEngine;
@@ -15,7 +15,7 @@ public class VideoUtility {
 		
 		encoder = new MPEG4encoder();
 		scenechangedetector = new SceneChangeDetector();
-		videoobjects = new VideoObjectSegmentation();
+		videoobjects = new ImageComparator();
 		library = new VisualFeatureLibrary();
 		trackerelems = new ParameterTracker();
 		SearchEngine = new ImageSearchEngine();

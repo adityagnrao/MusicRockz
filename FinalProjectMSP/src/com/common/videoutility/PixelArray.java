@@ -19,6 +19,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+
 public class PixelArray {
 	
 	static double [] RGBtoYUV = {0.299, 0.587, 0.114,
@@ -83,7 +86,9 @@ public class PixelArray {
 			double Y = SrcImage.X * RGBtoYUV[0] + SrcImage.Y * RGBtoYUV[1] + SrcImage.Z * RGBtoYUV[2];
 			double U = SrcImage.X * RGBtoYUV[3] + SrcImage.Y * RGBtoYUV[4] + SrcImage.Z * RGBtoYUV[5];
 			double V = SrcImage.X * RGBtoYUV[6] + SrcImage.Y * RGBtoYUV[7] + SrcImage.Z * RGBtoYUV[8];
-			DestImage = new Pixel(Y, U, V);
+			SrcImage.X = Y;
+			SrcImage.Y = U;
+			SrcImage.Z = V;
 		}
 		else
 		{
@@ -91,11 +96,13 @@ public class PixelArray {
 			double R = Math.abs(SrcImage.X * YUVtoRGB[0] + SrcImage.Y * YUVtoRGB[1] + SrcImage.Z * YUVtoRGB[2]);
 			double G = Math.abs(SrcImage.X * YUVtoRGB[3] + SrcImage.Y * YUVtoRGB[4] + SrcImage.Z * YUVtoRGB[5]);
 			double B = Math.abs(SrcImage.X * YUVtoRGB[6] + SrcImage.Y * YUVtoRGB[7] + SrcImage.Z * YUVtoRGB[8]);
-			DestImage = new Pixel(R, G, B);
+			SrcImage.X = R;
+			SrcImage.Y = G;
+			SrcImage.Z = B;
 		}
 
 
-		return DestImage;
+		return SrcImage;
 	}
 	
 	public Pixel [][] ConverttoPixelArray(BufferedImage img, int width, int height)
@@ -135,5 +142,22 @@ public class PixelArray {
 	public double EuclideanDistance(Pixel p1, Pixel p2)
 	{
 		return Math.sqrt((p1.i - p2.i)*(p1.i-p2.i) + (p1.j - p2.j)*(p1.j-p2.j));
+	}
+	
+	public Mat ConverttoMatfromBufferedImage(BufferedImage image)
+	{
+		byte[] pixels = ((DataBufferByte)image.getRaster().getDataBuffer()).getData();
+	
+		int rows = image.getWidth();
+        int cols = image.getHeight();
+        int type = CvType.CV_8UC3;
+        Mat newMat = new Mat(rows,cols,type);
+
+        for(int r=0; r<rows; r++){
+            for(int c=0; c<cols; c++){
+            	newMat.put(r, c, pixels);
+            }
+        }
+        return newMat;
 	}
 }

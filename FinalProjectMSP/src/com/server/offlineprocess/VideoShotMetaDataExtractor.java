@@ -92,42 +92,57 @@ public class VideoShotMetaDataExtractor {
 		
 		
 		VideoUtility util = new VideoUtility();
+		List<BufferedImage> ProcessedFrames = new ArrayList<BufferedImage>();
 		util.TODEBUGS.DEBUG_PRINTLN(true, "yappax ayetho maga video reading");
 		
 		/*
 		 * Perform MetaData extraction on every video
 		 */
-		for(int Vindex = 0; Vindex < N; Vindex++)
+		//for(int Vindex = 0; Vindex < N; Vindex++)
 		{
-			util.scenechangedetector.FindScenechangedFrames(VideoList.get(Vindex), width, height);
+			//ProcessedFrames = util.scenechangedetector.FindScenechangedFrames(VideoList.get(Vindex), width, height);
+			//Video-object Segmentation
+			ProcessedFrames.add(VideoList.get(0).Frames.get(2));
+			ProcessedFrames.add(VideoList.get(1).Frames.get(200));
+			ProcessedFrames.add(VideoList.get(2).Frames.get(135));
+			util.videoobjects.HSVHistorgramMatcher(ProcessedFrames);
 		}
 		
-		//Video-object Segmentation
-		//util.videoobjects.SegmenttoVideoObjects();
+	
 
 		//Parameter tracking
 		//util.trackerelems.TrackVideoObjects();
 
 		//Visual Library Feature
 		//util.library.BuildLibrary();
+/*
 
-
-		/*	Pixel [][] Queryimg = new Pixel[height][width];
-		int N = 5; int index = 0;
-		Queryimg = util.Converter.ConverttoPixelArray(args[1], width, height);
+			Pixel [][] Queryimg = new Pixel[height][width];
+		int index = 0;
+		Queryimg = util.Converter.ConverttoPixelArray(VideoList.get(0).Frames.get(5), width, height);
 		Queryimg = util.Converter.ConvertRGBtoYUV(Queryimg, width, height);
 		Queryimg = util.Converter.Normalizeby256(Queryimg, width, height);
+		N = VideoList.get(1).Frames.size();
 		Pixel [][][] Targetimg = new Pixel[N][height][width];
-
-		for(int i = 0; i < N; i++)
+		util.TODEBUGS.DEBUG_PRINT(true, "Value of N"+N);
+		int ti,tj = 0;
+		int countframes = 0;
+		for( ti = 0; ti < 55; ti++)
 		{
-
-			Targetimg[i] = util.Converter.ConverttoPixelArray(args[i], width, height);
-			Targetimg[i] = util.Converter.ConvertRGBtoYUV(Targetimg[i], width, height);
-			Targetimg[i] = util.Converter.Normalizeby256(Targetimg[i], width, height);
+			Targetimg[ti] = util.Converter.ConverttoPixelArray(VideoList.get(1).Frames.get(tj), width, height);
+			Targetimg[ti] = util.Converter.ConvertRGBtoYUV(Targetimg[ti], width, height);
+			Targetimg[ti] = util.Converter.Normalizeby256(Targetimg[ti], width, height);
+			countframes++;
+			tj+=5;
 		}
-
-
+		/*for(tj = ti; tj < VideoList.get(1).Frames.size(); tj+=10)
+		{
+			Targetimg[tj] = util.Converter.ConverttoPixelArray(VideoList.get(2).Frames.get(tj), width, height);
+			Targetimg[tj] = util.Converter.ConvertRGBtoYUV(Targetimg[tj], width, height);
+			Targetimg[tj] = util.Converter.Normalizeby256(Targetimg[tj], width, height);
+		}
+		N = countframes-1;
+		util.TODEBUGS.DEBUG_PRINT(true, "Value of N"+N);
 
 
 		Pixel [][] FinalImage = new Pixel[height][width];
@@ -151,8 +166,8 @@ public class VideoShotMetaDataExtractor {
 
 		for(int i = 0; i < N; i++)
 			util.TODEBUGS.DEBUG_PRINT(true, Score[i]+"\n");
-		 */
-
+		 
+*/
 
 		/*************************************OUTPUT**************************************************/
 		/*BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
