@@ -10,7 +10,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import com.googlecode.javacpp.Loader;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
-import com.server.offlineprocess.VideoShot;
 import com.googlecode.javacv.*;
 import static com.googlecode.javacv.cpp.opencv_core.*;
 import static com.googlecode.javacv.cpp.opencv_imgproc.*;
@@ -29,13 +28,25 @@ public class SceneChangeDetector {
 		// TODO Auto-generated constructor stub
 	}
 
-	public List<BufferedImage> FindScenechangedFrames(VideoShot DatabaseVideo, int width, int height) {
+	public VideoShot FindScenechangedFrames(VideoShot DatabaseVideo, int width, int height) {
 
 		List<BufferedImage>Frames = new ArrayList<BufferedImage>();
+		List<BufferedImage>EdgeFrames = new ArrayList<BufferedImage>();
 		List<BufferedImage>DilatedFrames = new ArrayList<BufferedImage>();
 
 		Frames = DatabaseVideo.getListofFrames();
-
+		
+		JFrame Inputframe = new JFrame();
+		JLabel Inputlabel = new JLabel(new ImageIcon(DatabaseVideo.getListofFrames().get(2)));
+		Inputframe.getContentPane().add(Inputlabel, BorderLayout.CENTER);
+		Inputframe.pack();
+		Inputframe.setVisible(true);
+		 Inputframe = new JFrame();
+		 Inputlabel = new JLabel(new ImageIcon(DatabaseVideo.getListofFrames().get(26)));
+		Inputframe.getContentPane().add(Inputlabel, BorderLayout.CENTER);
+		Inputframe.pack();
+		Inputframe.setVisible(true);
+		
 		for(int i = 0; i < Frames.size(); i++)
 		{
 
@@ -49,8 +60,7 @@ public class SceneChangeDetector {
 			detector.process();
 			//SceneDebug.DEBUG_PRINTLN(true, "Processing"+i+" Image finished******************");
 			BufferedImage edges = detector.getEdgesImage();
-			Frames.remove(i);
-			Frames.add(i, edges);
+			EdgeFrames.add(i, edges);
 		}
 
 		/*
@@ -58,9 +68,9 @@ public class SceneChangeDetector {
 		 */
 
 		Pixel [][] FramedImage = new Pixel[height][width];
-		for(int i = 0; i < Frames.size(); i++)
+		for(int i = 0; i < EdgeFrames.size(); i++)
 		{
-			FramedImage = Converter.ConverttoPixelArray(Frames.get(i), width, height);
+			FramedImage = Converter.ConverttoPixelArray(EdgeFrames.get(i), width, height);
 			FramedImage = EdgeDilation(FramedImage, width, height);
 
 			BufferedImage edgeDilated = Converter.ConverttoBufferedImage(FramedImage, width, height);
@@ -74,13 +84,13 @@ public class SceneChangeDetector {
 		Pixel [][] FramedImage2 = new Pixel[height][width];
 		Pixel [][] DilatedFramedImage1 = new Pixel[height][width];
 		Pixel [][] DilatedFramedImage2 = new Pixel[height][width];
-		double ratio[] = new double[Frames.size()];
-		for(int i = 0; i < Frames.size()-1; i++)
+		double ratio[] = new double[EdgeFrames.size()];
+		for(int i = 0; i < EdgeFrames.size()-1; i++)
 		{
 			//FramedImage1 = OpticalFlowAnalysis(Frames.get(i), Frames.get(i+1));
 
-			FramedImage1 = Converter.ConverttoPixelArray(Frames.get(i), width, height);
-			FramedImage2 = Converter.ConverttoPixelArray(Frames.get(i+1), width, height);
+			FramedImage1 = Converter.ConverttoPixelArray(EdgeFrames.get(i), width, height);
+			FramedImage2 = Converter.ConverttoPixelArray(EdgeFrames.get(i+1), width, height);
 			DilatedFramedImage1 = Converter.ConverttoPixelArray(DilatedFrames.get(i), width, height);
 			DilatedFramedImage2 = Converter.ConverttoPixelArray(DilatedFrames.get(i+1), width, height);
 			ratio[i] = ChangeinEdgePixels(FramedImage1, FramedImage2, DilatedFramedImage1, DilatedFramedImage2, width, height);
@@ -90,6 +100,7 @@ public class SceneChangeDetector {
 			SceneDebug.DEBUG_PRINTLN(true, "Frame No "+i+" ----Ratio ---"+ratio[i]);
 
 		List<BufferedImage>SceneChangedFrames = new ArrayList<BufferedImage>();
+		List<Integer>Frametracker = new ArrayList<Integer>();
 		int FrameCount = 0;
 		int NoteId =  -1;
 		int j = 1;
@@ -116,14 +127,26 @@ public class SceneChangeDetector {
 
 			if(ratio[NoteId] > (avg+edgethreshold))
 			{
+				 Inputframe = new JFrame();
+				 Inputlabel = new JLabel(new ImageIcon(DatabaseVideo.getListofFrames().get(NoteId)));
+				Inputframe.getContentPane().add(Inputlabel, BorderLayout.CENTER);
+				Inputframe.pack();
+				Inputframe.setVisible(true);
+				 Inputframe = new JFrame();
+				 Inputlabel = new JLabel(new ImageIcon(DatabaseVideo.getListofFrames().get(NoteId+1)));
+				Inputframe.getContentPane().add(Inputlabel, BorderLayout.CENTER);
+				Inputframe.pack();
+				Inputframe.setVisible(true);
 				SceneChangedFrames.add(DatabaseVideo.getListofFrames().get(NoteId));
 				SceneChangedFrames.add(DatabaseVideo.getListofFrames().get(NoteId+1));
+				Frametracker.add(NoteId);
+				Frametracker.add(NoteId+1);
 			}
 		}
 
-
-
-		return SceneChangedFrames;
+		DatabaseVideo.setListofProcessedFrames(SceneChangedFrames);
+		DatabaseVideo.setFrameTracker(Frametracker);
+		return DatabaseVideo;
 	}
 
 
