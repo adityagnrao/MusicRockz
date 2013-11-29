@@ -4,7 +4,7 @@ import static com.googlecode.javacv.cpp.opencv_core.IPL_DEPTH_8U;
 import static com.googlecode.javacv.cpp.opencv_core.cvCreateImage;
 import static com.googlecode.javacv.cpp.opencv_core.cvGetSize;
 import static com.googlecode.javacv.cpp.opencv_core.cvSplit;
-import static com.googlecode.javacv.cpp.opencv_highgui.cvShowImage;
+import static com.googlecode.javacv.cpp.opencv_highgui.*;
 import static com.googlecode.javacv.cpp.opencv_imgproc.CV_HIST_ARRAY;
 import static com.googlecode.javacv.cpp.opencv_imgproc.CV_RGB2GRAY;
 import static com.googlecode.javacv.cpp.opencv_imgproc.CV_RGB2HSV;
@@ -30,6 +30,8 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import static com.googlecode.javacv.cpp.opencv_core.*;
+import com.googlecode.javacv.cpp.opencv_core;
 import com.googlecode.javacv.cpp.opencv_nonfree;
 import com.googlecode.javacv.cpp.opencv_core.CvMat;
 import com.googlecode.javacv.cpp.opencv_core.CvSize;
@@ -38,6 +40,7 @@ import com.googlecode.javacv.cpp.opencv_core.IplImageArray;
 import com.googlecode.javacv.cpp.opencv_features2d.DescriptorExtractor;
 import com.googlecode.javacv.cpp.opencv_features2d.FeatureDetector;
 import com.googlecode.javacv.cpp.opencv_features2d.KeyPoint;
+import com.googlecode.javacv.cpp.opencv_highgui.CvOpenGLCallback;
 import com.googlecode.javacv.cpp.opencv_imgproc.CvHistogram;
 import com.googlecode.javacv.cpp.opencv_nonfree.SIFT;
 
@@ -70,27 +73,61 @@ public class VideoShot implements Serializable{
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.defaultWriteObject();
 		out.writeInt(ProcessedFrames.size()); // how many images are serialized?
-		WritableByteChannel channel = Channels.newChannel(out);
+		/*CvFileStorage cvfile,cvfile2;
+		cvfile = opencv_core.cvOpenFileStorage(
+	            "C:\\DescriptorMetadata.xml", // filename
+	            null, // memstorage
+	            CV_STORAGE_WRITE, // flags
+	            null); // encoding
+		
+		cvfile2 = opencv_core.cvOpenFileStorage(
+	            "C:\\HistogramMetadata.xml", // filename
+	            null, // memstorage
+	            CV_STORAGE_WRITE, // flags
+	            null); // encoding
+		*/
+		int i = 0;
 		for (BufferedImage eachImage : ProcessedFrames) {
 			ImageIO.write(eachImage, "png", out); // png is lossless
 		}
-		for (CvMat eachDescriptor : DescriptorList) {
-	
+		
+		/*for (CvMat eachDescriptor : DescriptorList) {
+			
+			cvWrite(cvfile, "Descriptors"+i, eachDescriptor);
+			i++;
 		}
+		i=0;
 		for (CvHistogram eachHistorgram : HistogramValue) {
-			//channel.write(eachHistorgram.asByteBuffer());
-		}
+			cvWrite(cvfile2, "Histogram"+i, eachHistorgram);
+			i++;
+		}*/
 	}
 
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.defaultReadObject();
 		final int imageCount = in.readInt();
+		CvFileStorage cvfile,cvfile2;
+		/*cvfile = opencv_core.cvOpenFileStorage(
+	            "C:\\DescriptorMetadata.xml", // filename
+	            null, // memstorage
+	            CV_STORAGE_READ, // flags
+	            null); // encoding
+		
+		cvfile2 = opencv_core.cvOpenFileStorage(
+	            "C:\\HistogramMetadata.xml", // filename
+	            null, // memstorage
+	            CV_STORAGE_READ, // flags
+	            null); // encoding
+	            */
+		int i1 = 0;
 		ProcessedFrames = new ArrayList<BufferedImage>(imageCount);
 		ReadableByteChannel channel = Channels.newChannel(in);
 		for (int i=0; i<imageCount; i++) {
 			ProcessedFrames.add(ImageIO.read(in));
-			//DescriptorList.add(IplImage.createFrom(ImageIO.read(in)).asCvMat());	
+			//DescriptorList.add((CvMat)cvReadByName(cvfile, null, "Descriptors"+i1));
+			//HistogramValue.add((CvHistogram)cvReadByName(cvfile2, null, "Histogram"+i1));
 		}
+		
 	}
 
 	public List<BufferedImage> getListofFrames(){

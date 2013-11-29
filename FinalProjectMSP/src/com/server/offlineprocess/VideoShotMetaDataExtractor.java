@@ -42,7 +42,7 @@ public class VideoShotMetaDataExtractor {
 		 * FOR each video extract rgb framebyframe data
 		 */
 		int N = Integer.parseInt(args[0]);
-		for(int i = 1; i <= 7; i++){
+		for(int i = 1; i <= N; i++){
 			try {
 				File file = new File(args[i]);
 				InputStream is = new FileInputStream(file);
@@ -117,6 +117,7 @@ public class VideoShotMetaDataExtractor {
 		}
 		
 		WritetoFile(VideoList);
+		util.TODEBUGS.DEBUG_PRINTLN(true, "yappa data send ayetha");
 	}
 
 	private static void WritetoFile(List<VideoShot> videoList) throws IOException {
