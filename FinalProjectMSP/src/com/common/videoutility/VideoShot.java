@@ -51,6 +51,7 @@ public class VideoShot implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	int VideoID;
+	int TotalNoofFrames;
 	List<Pixel [][]>capturedframes = new ArrayList<Pixel [][]>();
 	transient List<BufferedImage>Frames = new ArrayList<BufferedImage>();
 	transient List<CvMat>DescriptorList = new ArrayList<CvMat>();
@@ -63,44 +64,34 @@ public class VideoShot implements Serializable{
 
 	public VideoShot(int index) {
 		VideoID = index;
+		HistogramValue = new ArrayList<CvHistogram>();
 	}
 
 	public int getVideoID()
 	{
 		return VideoID;
 	}
+	
+	public void SetFrameSize(int TotalNoofFrames)
+	{
+		this.TotalNoofFrames = TotalNoofFrames;
+	}
+	
+	public int getFrameSize()
+	{
+		return this.TotalNoofFrames;
+	}
 
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.defaultWriteObject();
 		out.writeInt(ProcessedFrames.size()); // how many images are serialized?
-		/*CvFileStorage cvfile,cvfile2;
-		cvfile = opencv_core.cvOpenFileStorage(
-	            "C:\\DescriptorMetadata.xml", // filename
-	            null, // memstorage
-	            CV_STORAGE_WRITE, // flags
-	            null); // encoding
 		
-		cvfile2 = opencv_core.cvOpenFileStorage(
-	            "C:\\HistogramMetadata.xml", // filename
-	            null, // memstorage
-	            CV_STORAGE_WRITE, // flags
-	            null); // encoding
-		*/
 		int i = 0;
 		for (BufferedImage eachImage : ProcessedFrames) {
 			ImageIO.write(eachImage, "png", out); // png is lossless
 		}
 		
-		/*for (CvMat eachDescriptor : DescriptorList) {
-			
-			cvWrite(cvfile, "Descriptors"+i, eachDescriptor);
-			i++;
-		}
-		i=0;
-		for (CvHistogram eachHistorgram : HistogramValue) {
-			cvWrite(cvfile2, "Histogram"+i, eachHistorgram);
-			i++;
-		}*/
+		
 	}
 
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
@@ -167,14 +158,22 @@ public class VideoShot implements Serializable{
 	public void setFrameTracker(List<Integer> Frametracker){
 		this.Frametracker =  Frametracker;
 	}
+	
+	public void setDescriptorList(List<CvMat> Descriptorlist){
+		this.DescriptorList =  Descriptorlist;
+	}
+	
+	public void setHistogramValue(List<CvHistogram> histogramsval){
+		this.HistogramValue =  histogramsval;
+	}
 
 	public void HSVHistorgramExtractor() {
 
 		for(int i = 0; i < this.ProcessedFrames.size(); i++)
 		{
-			IplImage basImage = IplImage.createFrom(this.ProcessedFrames.get(0));
+			IplImage basImage = IplImage.createFrom(this.ProcessedFrames.get(i));
 			CvSize img_sz = cvGetSize(basImage);
-			cvShowImage("first imag", basImage);
+			//cvShowImage("first imag", basImage);
 			IplImage hsvImage= cvCreateImage(img_sz, IPL_DEPTH_8U, 3);    
 			cvCvtColor(basImage, hsvImage, CV_RGB2HSV);   
 			IplImageArray hsvChannels = splitChannels(hsvImage);
@@ -232,8 +231,8 @@ public class VideoShot implements Serializable{
 		cvCalcHist(image,hist, accumulate, null);
 		cvNormalizeHist(hist, 1);
 		cvGetMinMaxHistValue(hist, minMax, minMax, sizes, sizes);
-		VideoDebug.DEBUG_PRINTLN(false, "Min="+minMax[0]); //Less than 0.01
-		VideoDebug.DEBUG_PRINTLN(false, "Max="+minMax[1]); //255
+		//VideoDebug.DEBUG_PRINTLN(false, "Min="+minMax[0]); //Less than 0.01
+		//VideoDebug.DEBUG_PRINTLN(false, "Max="+minMax[1]); //255
 		return hist;
 	}
 

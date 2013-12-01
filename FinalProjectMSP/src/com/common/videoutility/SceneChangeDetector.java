@@ -36,16 +36,6 @@ public class SceneChangeDetector {
 
 		Frames = DatabaseVideo.getListofFrames();
 		
-		JFrame Inputframe = new JFrame();
-		JLabel Inputlabel = new JLabel(new ImageIcon(DatabaseVideo.getListofFrames().get(2)));
-		Inputframe.getContentPane().add(Inputlabel, BorderLayout.CENTER);
-		Inputframe.pack();
-		Inputframe.setVisible(true);
-		 Inputframe = new JFrame();
-		 Inputlabel = new JLabel(new ImageIcon(DatabaseVideo.getListofFrames().get(26)));
-		Inputframe.getContentPane().add(Inputlabel, BorderLayout.CENTER);
-		Inputframe.pack();
-		Inputframe.setVisible(true);
 		
 		for(int i = 0; i < Frames.size(); i++)
 		{
@@ -97,7 +87,7 @@ public class SceneChangeDetector {
 		}
 
 		for(int i = 0; i < Frames.size()-1; i++)
-			SceneDebug.DEBUG_PRINTLN(true, "Frame No "+i+" ----Ratio ---"+ratio[i]);
+			SceneDebug.DEBUG_PRINTLN(false, "Frame No "+i+" ----Ratio ---"+ratio[i]);
 
 		List<BufferedImage>SceneChangedFrames = new ArrayList<BufferedImage>();
 		List<Integer>Frametracker = new ArrayList<Integer>();
@@ -127,8 +117,8 @@ public class SceneChangeDetector {
 
 			if(ratio[NoteId] > (avg+edgethreshold))
 			{
-				 Inputframe = new JFrame();
-				 Inputlabel = new JLabel(new ImageIcon(DatabaseVideo.getListofFrames().get(NoteId)));
+				/* JFrame Inputframe = new JFrame();
+				 JLabel Inputlabel = new JLabel(new ImageIcon(DatabaseVideo.getListofFrames().get(NoteId)));
 				Inputframe.getContentPane().add(Inputlabel, BorderLayout.CENTER);
 				Inputframe.pack();
 				Inputframe.setVisible(true);
@@ -136,7 +126,7 @@ public class SceneChangeDetector {
 				 Inputlabel = new JLabel(new ImageIcon(DatabaseVideo.getListofFrames().get(NoteId+1)));
 				Inputframe.getContentPane().add(Inputlabel, BorderLayout.CENTER);
 				Inputframe.pack();
-				Inputframe.setVisible(true);
+				Inputframe.setVisible(true);*/
 				SceneChangedFrames.add(DatabaseVideo.getListofFrames().get(NoteId));
 				SceneChangedFrames.add(DatabaseVideo.getListofFrames().get(NoteId+1));
 				Frametracker.add(NoteId);

@@ -28,7 +28,7 @@ public class VisualFeatureLibrary {
 		DMatchVectorVector matchesvector2 = new DMatchVectorVector();
 		double matchSum = 0;
 		double temp = 0;
-		GraphDatatracker Graphdata = new GraphDatatracker(DatabaseVideo.Frames.size());
+		GraphDatatracker Graphdata = new GraphDatatracker(DatabaseVideo.TotalNoofFrames);
 		
 		for(int queryimage = 0; queryimage < Query.DescriptorList.size(); queryimage++)
 		{
@@ -40,6 +40,7 @@ public class VisualFeatureLibrary {
 				matcher.knnMatch(descriptors2, descriptors1, matchesvector2, 2, null, true);
 				double m1 = ratioTest(matchesvector1);
 				double m2 = ratioTest(matchesvector2);
+				VFLDebug.DEBUG_PRINTLN(true, " ratiotest---------- "+m1+" "+m2);
 				if(m1 < m2)
 					temp = FeatureWeight*m2/Query.KeypointCapacity.get(queryimage);
 				else
@@ -47,8 +48,8 @@ public class VisualFeatureLibrary {
 				matchSum += temp;
 				 double matchValue=cvCompareHist(Query.HistogramValue.get(queryimage), DatabaseVideo.HistogramValue.get(databasevideo), CV_COMP_INTERSECT);
 				 matchSum += ColorbasedMatch*matchValue;
-				 VFLDebug.DEBUG_PRINTLN(true, " feature match "+temp+" Colormatched "+ matchValue);
-				 Graphdata.SetMatchdata(DatabaseVideo.Frametracker.get(databasevideo), FeatureWeight*m2/Query.KeypointCapacity.get(queryimage) + ColorbasedMatch*matchValue );
+				 VFLDebug.DEBUG_PRINTLN(true, " feature match "+temp);
+				 Graphdata.SetMatchdata(DatabaseVideo.Frametracker.get(databasevideo), temp + ColorbasedMatch*matchValue );
 				 
 			}
 		}

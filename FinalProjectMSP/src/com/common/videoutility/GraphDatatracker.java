@@ -7,7 +7,7 @@ public class GraphDatatracker {
 	
 	public GraphDatatracker(int TotalNoofFrames) {
 		MatchData = new double[TotalNoofFrames];
-		MatchSum = 0;
+		MatchSum = -1;
 		
 	}
 	
@@ -30,4 +30,5 @@ public class GraphDatatracker {
 		// TODO Auto-generated method stub
 		this.MatchSum = matchsum;
 	}
+	
 }
