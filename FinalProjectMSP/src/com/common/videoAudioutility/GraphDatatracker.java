@@ -1,14 +1,15 @@
-package com.common.videoutility;
+package com.common.videoAudioutility;
 
 public class GraphDatatracker {
 	
 	double []MatchData;
 	double MatchSum;
+	double AudioMatchSum;
 	
 	public GraphDatatracker(int TotalNoofFrames) {
 		MatchData = new double[TotalNoofFrames];
 		MatchSum = -1;
-		
+		AudioMatchSum = -1;
 	}
 	
 	public double[] getMatchdata() {
@@ -21,6 +22,11 @@ public class GraphDatatracker {
 		return this.MatchSum;
 	}
 	
+	public double getAudioMatchSum() {
+		// TODO Auto-generated method stub
+		return this.AudioMatchSum;
+	}
+	
 	public void SetMatchdata(int frameID, double matchsum) {
 		// TODO Auto-generated method stub
 		this.MatchData[frameID] = matchsum;
@@ -29,6 +35,11 @@ public class GraphDatatracker {
 	public void SetMatchSum(double matchsum) {
 		// TODO Auto-generated method stub
 		this.MatchSum = matchsum;
+	}
+
+	public void SetAudioMatch(float score) {
+		// TODO Auto-generated method stub
+		this.AudioMatchSum = score;
 	}
 	
 }

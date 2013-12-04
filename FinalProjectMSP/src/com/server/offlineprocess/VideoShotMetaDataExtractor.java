@@ -2,13 +2,15 @@ package com.server.offlineprocess;
 
 
 
-import com.common.videoutility.*;
+import com.common.videoAudioutility.*;
+
 import static com.googlecode.javacv.cpp.opencv_core.*;
 
 import com.googlecode.javacv.cpp.opencv_core;
 import com.googlecode.javacv.cpp.opencv_core.CvFileStorage;
 import com.googlecode.javacv.cpp.opencv_core.CvMat;
 import com.googlecode.javacv.cpp.opencv_imgproc.CvHistogram;
+import com.musicg.wave.Wave;
 
 import java.awt.BorderLayout;
 import java.awt.image.BufferedImage;
@@ -41,7 +43,7 @@ public class VideoShotMetaDataExtractor {
 
 		int width = 352;
 		int height = 288;
-		List<VideoShot>VideoList = new ArrayList<VideoShot>();
+		List<VideoAudioShot>VideoList = new ArrayList<VideoAudioShot>();
 		/*
 		 * FOR each video extract rgb framebyframe data
 		 */
@@ -49,9 +51,9 @@ public class VideoShotMetaDataExtractor {
 		for(int i = 1; i <= N; i++){
 			List<BufferedImage>Frames = new ArrayList<BufferedImage>();
 			try {
-				File file = new File(args[i]);
+				File file = new File(args[i]+".rgb");
 				InputStream is = new FileInputStream(file);
-				VideoShot newVideo =  new VideoShot(i);
+				VideoAudioShot newVideo =  new VideoAudioShot(i);
 
 
 				long len = file.length();
@@ -102,11 +104,8 @@ public class VideoShotMetaDataExtractor {
 			}
 		}
 
-
+	
 		//Video Utility Object created
-
-
-
 		VideoUtility util = new VideoUtility();
 		util.TODEBUGS.DEBUG_PRINTLN(true, "yappax ayetho maga video reading");
 
@@ -116,13 +115,17 @@ public class VideoShotMetaDataExtractor {
 		 */
 		for(int Vindex = 0; Vindex < N; Vindex++)
 		{
-			VideoShot v = util.scenechangedetector.FindScenechangedFrames(VideoList.get(Vindex), width, height);
+			VideoAudioShot v = util.scenechangedetector.FindScenechangedFrames(VideoList.get(Vindex), width, height);
 			util.TODEBUGS.DEBUG_PRINTLN(true,"video "+" vindex "+" scenechangedetectdone");
 			VideoList.remove(Vindex);
 			VideoList.add(Vindex, v);
 			//feature extraction ---> Color and feature
 			VideoList.get(Vindex).featureBasedExtractor();
 			VideoList.get(Vindex).HSVHistorgramExtractor();
+			//Extract Audio MetaData
+			String filename = args[Vindex+1];
+			Wave sampleWave = new Wave(filename+".wav");
+			VideoList.get(Vindex).ExtractAudioFingerPrint(sampleWave);
 		}
 
 		WritetoFile(VideoList);
@@ -130,7 +133,7 @@ public class VideoShotMetaDataExtractor {
 		util.TODEBUGS.DEBUG_PRINTLN(true, "yappa data send ayetha");
 	}
 
-	private static void OpencvWritetoFile(List<VideoShot> videoList) {
+	private static void OpencvWritetoFile(List<VideoAudioShot> videoList) {
 		
 		int i = 0;
 		for(int index = 0; index < videoList.size(); index++){
@@ -164,7 +167,7 @@ public class VideoShotMetaDataExtractor {
 
 	}
 
-	private static void WritetoFile(List<VideoShot> videoList) throws IOException {
+	private static void WritetoFile(List<VideoAudioShot> videoList) throws IOException {
 
 		ObjectOutputStream oos = null;
 		FileOutputStream fout = null;

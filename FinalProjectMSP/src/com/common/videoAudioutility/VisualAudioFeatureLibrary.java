@@ -1,4 +1,4 @@
-package com.common.videoutility;
+package com.common.videoAudioutility;
 
 import static com.googlecode.javacv.cpp.opencv_imgproc.CV_COMP_INTERSECT;
 import static com.googlecode.javacv.cpp.opencv_imgproc.cvCompareHist;
@@ -10,18 +10,21 @@ import com.googlecode.javacv.cpp.opencv_core.CvArr;
 import com.googlecode.javacv.cpp.opencv_core.CvMat;
 import com.googlecode.javacv.cpp.opencv_features2d.BFMatcher;
 import com.googlecode.javacv.cpp.opencv_features2d.DMatchVectorVector;
+import com.musicg.fingerprint.FingerprintSimilarity;
+import com.musicg.fingerprint.FingerprintSimilarityComputer;
+import com.musicg.wave.Wave;
 
-public class VisualFeatureLibrary {
+public class VisualAudioFeatureLibrary {
 	
 	double FeatureWeight = 0.8;
 	double ColorbasedMatch = 0.2;
 	Debugger VFLDebug = new Debugger();
 	
-	public VisualFeatureLibrary() {
+	public VisualAudioFeatureLibrary() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public GraphDatatracker MatchVideos(VideoShot Query, VideoShot DatabaseVideo)
+	public GraphDatatracker MatchVideoAudio(VideoAudioShot Query, VideoAudioShot DatabaseVideo)
 	{
 		BFMatcher matcher = new BFMatcher(4, false);
 		DMatchVectorVector matchesvector1 = new DMatchVectorVector();
@@ -53,9 +56,13 @@ public class VisualFeatureLibrary {
 				 
 			}
 		}
-		Graphdata.SetMatchSum(matchSum);
+		FingerprintSimilarityComputer fp = new FingerprintSimilarityComputer(Query.audioFeatureTracker, DatabaseVideo.audioFeatureTracker);
+		FingerprintSimilarity Audiosimilarity = fp.getFingerprintsSimilarity();
+		Graphdata.SetAudioMatch(Audiosimilarity.getSimilarity());
+		Graphdata.SetMatchSum(matchSum);	
 		return Graphdata;
 	}
+	
 	
 	private int ratioTest(DMatchVectorVector matches){
 		int j = 0;
@@ -72,6 +79,8 @@ public class VisualFeatureLibrary {
 		}
 		return j;
 	}
+	
+	
 	
 	public void BuildLibrary() {
 		// TODO Auto-generated method stub

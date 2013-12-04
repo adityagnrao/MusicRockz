@@ -18,10 +18,11 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-import com.common.videoutility.GraphDatatracker;
-import com.common.videoutility.Pixel;
-import com.common.videoutility.VideoShot;
-import com.common.videoutility.VideoUtility;
+import com.common.videoAudioutility.GraphDatatracker;
+import com.common.videoAudioutility.Pixel;
+import com.common.videoAudioutility.VideoAudioShot;
+import com.common.videoAudioutility.VideoUtility;
+
 import static com.googlecode.javacv.cpp.opencv_core.*;
 import static com.googlecode.javacv.cpp.opencv_imgproc.CV_HIST_ARRAY;
 import static com.googlecode.javacv.cpp.opencv_imgproc.cvCreateHist;
@@ -31,19 +32,20 @@ import com.googlecode.javacv.cpp.opencv_core;
 import com.googlecode.javacv.cpp.opencv_core.CvFileStorage;
 import com.googlecode.javacv.cpp.opencv_core.CvMat;
 import com.googlecode.javacv.cpp.opencv_imgproc.CvHistogram;
+import com.musicg.wave.Wave;
 
 public class QueryClipMetaDataExtractor {
 
 	public static void main(String[] args) throws IOException {
 		int width = 352;
 		int height = 288;
-		VideoShot QueryVideo = new VideoShot(0);
+		VideoAudioShot QueryVideo = new VideoAudioShot(0);
 		VideoUtility util = new VideoUtility();
-		List<VideoShot>ExtractedMetadata = VideoMetadataReader("C:\\DataExtracted\\Metadata.msp");
+		List<VideoAudioShot>ExtractedMetadata = VideoMetadataReader("C:\\DataExtracted\\Metadata.msp");
 		OpenCvReadFromFile(ExtractedMetadata);
 		int N = Integer.parseInt(args[0]);
 		try {
-			File file = new File(args[1]);
+			File file = new File(args[1]+".rgb");
 			InputStream is = new FileInputStream(file);
 			long len = file.length();
 			byte[] bytes = new byte[(int)len];
@@ -92,11 +94,13 @@ public class QueryClipMetaDataExtractor {
 		 * Perform MetaData extraction on Query
 		 */
 		QueryVideo = util.scenechangedetector.FindScenechangedFrames(QueryVideo, width, height);
-
-		//QueryVideo.setListofProcessedFrames(ProcessedFrames);
 		//feature extraction ---> Color and feature
 		QueryVideo.featureBasedExtractor();
 		QueryVideo.HSVHistorgramExtractor();
+		String filename = args[1];
+		Wave sampleWave = new Wave(filename+".wav");
+		QueryVideo.ExtractAudioFingerPrint(sampleWave);
+		
 		List<Double> FinalListBuddy = new ArrayList<Double>();
 		GraphDatatracker []g = new GraphDatatracker[ExtractedMetadata.size()];
 		for(int i = 0; i < ExtractedMetadata.size(); i++)
@@ -104,11 +108,11 @@ public class QueryClipMetaDataExtractor {
 			//List<CvHistogram>HistogramValue = new ArrayList<CvHistogram>();
 			//ExtractedMetadata.get(i).setHistogramValue(HistogramValue);
 			//ExtractedMetadata.get(i).HSVHistorgramExtractor();
-			 g[i] = util.library.MatchVideos(QueryVideo, ExtractedMetadata.get(i));
+			 g[i] = util.library.MatchVideoAudio(QueryVideo, ExtractedMetadata.get(i));
 			System.out.println(" ------------------gologolo------------"+ g[i].getMatchSum());
 			FinalListBuddy.add(g[i].getMatchSum());
 		}
-		
+		System.out.println("Audiomatchresults"+g[0].getAudioMatchSum());
 		System.out.println("appa guruve shambo shankara"+IndexMatch(g,ExtractedMetadata.size(),findKthMax(FinalListBuddy, 1))+" "+IndexMatch(g,ExtractedMetadata.size(),findKthMax(FinalListBuddy, 2)));
 		
 	}
@@ -155,7 +159,7 @@ public class QueryClipMetaDataExtractor {
 		}
 	}
 
-	private static List<VideoShot> OpenCvReadFromFile(List<VideoShot> extractedMetadata) {
+	private static List<VideoAudioShot> OpenCvReadFromFile(List<VideoAudioShot> extractedMetadata) {
 
 
 		System.out.println(extractedMetadata.size());
@@ -207,14 +211,14 @@ public class QueryClipMetaDataExtractor {
 
 	}
 
-	private static List<VideoShot> VideoMetadataReader(String string) throws IOException {
+	private static List<VideoAudioShot> VideoMetadataReader(String string) throws IOException {
 		ObjectInputStream objectinputstream = null;
 		FileInputStream streamIn = null;
-		List<VideoShot>readCase = null;
+		List<VideoAudioShot>readCase = null;
 		try {
 			streamIn = new FileInputStream(string);
 			objectinputstream = new ObjectInputStream(streamIn);
-			readCase = (List<VideoShot>) objectinputstream.readObject();
+			readCase = (List<VideoAudioShot>) objectinputstream.readObject();
 
 		} catch (Exception e) {
 

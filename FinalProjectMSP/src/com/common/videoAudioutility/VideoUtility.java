@@ -1,10 +1,10 @@
-package com.common.videoutility;
+package com.common.videoAudioutility;
 
 public class VideoUtility {
 	
 	public MPEG4encoder encoder;
 	public SceneChangeDetector scenechangedetector;
-	public VisualFeatureLibrary library;
+	public VisualAudioFeatureLibrary library;
 	public GraphDatatracker trackerelems;
 	public ImageSearchEngine SearchEngine;
 	public PixelArray Converter;
@@ -14,7 +14,7 @@ public class VideoUtility {
 		
 		encoder = new MPEG4encoder();
 		scenechangedetector = new SceneChangeDetector();
-		library = new VisualFeatureLibrary();
+		library = new VisualAudioFeatureLibrary();
 		SearchEngine = new ImageSearchEngine();
 		Converter = new PixelArray();
 		TODEBUGS = new Debugger();

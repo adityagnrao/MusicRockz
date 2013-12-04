@@ -1,4 +1,4 @@
-package com.common.videoutility;
+package com.common.videoAudioutility;
 
 import static com.googlecode.javacv.cpp.opencv_core.IPL_DEPTH_8U;
 import static com.googlecode.javacv.cpp.opencv_core.cvCreateImage;
@@ -43,8 +43,11 @@ import com.googlecode.javacv.cpp.opencv_features2d.KeyPoint;
 import com.googlecode.javacv.cpp.opencv_highgui.CvOpenGLCallback;
 import com.googlecode.javacv.cpp.opencv_imgproc.CvHistogram;
 import com.googlecode.javacv.cpp.opencv_nonfree.SIFT;
+import com.musicg.fingerprint.FingerprintSimilarity;
+import com.musicg.fingerprint.FingerprintSimilarityComputer;
+import com.musicg.wave.Wave;
 
-public class VideoShot implements Serializable{
+public class VideoAudioShot implements Serializable{
 
 	/**
 	 * 
@@ -61,8 +64,11 @@ public class VideoShot implements Serializable{
 	transient PixelArray converter = new PixelArray();
 	transient List<BufferedImage>ProcessedFrames = new ArrayList<BufferedImage>();
 	List<Integer>Frametracker = new ArrayList<Integer>();
+	//Audio Contents
+	byte[] audioFeatureTracker;
+	
 
-	public VideoShot(int index) {
+	public VideoAudioShot(int index) {
 		VideoID = index;
 		HistogramValue = new ArrayList<CvHistogram>();
 	}
@@ -245,7 +251,12 @@ public class VideoShot implements Serializable{
 		cvSplit(hsvImage, channel0, channel1, channel2, null);
 		return new IplImageArray(channel0, channel1, channel2);
 	}
-
+	
+	
+	public void ExtractAudioFingerPrint(Wave sampleWave)
+	{
+		this.audioFeatureTracker = sampleWave.getFingerprint();
+	}
 	
 
 }

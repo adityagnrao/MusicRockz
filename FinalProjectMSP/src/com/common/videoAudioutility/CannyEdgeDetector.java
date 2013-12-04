@@ -1,4 +1,4 @@
-package com.common.videoutility;
+package com.common.videoAudioutility;
 
 import java.awt.image.BufferedImage;
 import java.util.Arrays;

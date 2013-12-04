@@ -1,4 +1,4 @@
-package com.common.videoutility;
+package com.common.videoAudioutility;
 
 import java.awt.BorderLayout;
 import java.awt.image.BufferedImage;
@@ -28,7 +28,7 @@ public class SceneChangeDetector {
 		// TODO Auto-generated constructor stub
 	}
 
-	public VideoShot FindScenechangedFrames(VideoShot DatabaseVideo, int width, int height) {
+	public VideoAudioShot FindScenechangedFrames(VideoAudioShot DatabaseVideo, int width, int height) {
 
 		List<BufferedImage>Frames = new ArrayList<BufferedImage>();
 		List<BufferedImage>EdgeFrames = new ArrayList<BufferedImage>();

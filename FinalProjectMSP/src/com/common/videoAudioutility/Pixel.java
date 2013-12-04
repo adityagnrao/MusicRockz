@@ -1,4 +1,4 @@
-package com.common.videoutility;
+package com.common.videoAudioutility;
 /*
  * Author: Preetham M S
  * Class description: MulImage is a class consisting of 3 pixels
