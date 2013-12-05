@@ -1,5 +1,7 @@
 package com.client.onlineprocess;
 
+import com.display.uielement.*;
+
 import java.awt.BorderLayout;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -100,33 +102,50 @@ public class QueryClipMetaDataExtractor {
 		String filename = args[1];
 		Wave sampleWave = new Wave(filename+".wav");
 		QueryVideo.ExtractAudioFingerPrint(sampleWave);
-		
+
 		List<Double> FinalListBuddy = new ArrayList<Double>();
 		GraphDatatracker []g = new GraphDatatracker[ExtractedMetadata.size()];
 		for(int i = 0; i < ExtractedMetadata.size(); i++)
 		{
-			//List<CvHistogram>HistogramValue = new ArrayList<CvHistogram>();
-			//ExtractedMetadata.get(i).setHistogramValue(HistogramValue);
-			//ExtractedMetadata.get(i).HSVHistorgramExtractor();
-			 g[i] = util.library.MatchVideoAudio(QueryVideo, ExtractedMetadata.get(i));
-			System.out.println(" ------------------gologolo------------"+ g[i].getMatchSum());
-			FinalListBuddy.add(g[i].getMatchSum());
+			g[i] = util.library.MatchVideoAudio(QueryVideo, ExtractedMetadata.get(i));
+			System.out.println(i+" ------------------gologolo------------"+ g[i].getMatchSum()+"---"+g[i].getAudioMatchSum());
+			FinalListBuddy.add(0.5*g[i].getMatchSum()+0.5*g[i].getAudioMatchSum());
 		}
-		System.out.println("Audiomatchresults"+g[0].getAudioMatchSum());
-		System.out.println("appa guruve shambo shankara"+IndexMatch(g,ExtractedMetadata.size(),findKthMax(FinalListBuddy, 1))+" "+IndexMatch(g,ExtractedMetadata.size(),findKthMax(FinalListBuddy, 2)));
 		
+		System.out.print("1st best match:"+IndexMatch(g,ExtractedMetadata.size(),findKthMax(FinalListBuddy, 1))
+				+"\n"+"Second Best Match:"+IndexMatch(g,ExtractedMetadata.size(),findKthMax(FinalListBuddy, 2))+"\n"
+		+"Third Best Match"+IndexMatch(g,ExtractedMetadata.size(),findKthMax(FinalListBuddy, 3))+"\n"
+		+"Fourth Best Match"+IndexMatch(g,ExtractedMetadata.size(),findKthMax(FinalListBuddy, 4))+"\n");
+		
+		
+		
+		/*
+		 * Make sure to read the Extracted Videos before UI elements are sprung up
+		 * That is read the 3 best videos to be shown first
+		 */
+		
+		/*
+		 * UI- Design Elements to be called from here
+		 * UI elements:
+		 * 1.  VideoAudio Playback
+		 * 2.  Graph Construction sample Graph construction added here [TODO: Complete building the graph]
+		 * 3.  Both elements needs to shown on the same UI template 
+		 */
+		DrawGraph Graphutil = new DrawGraph(g[0]);
+	    Graphutil.createAndShowGui();
+
 	}
 
 	private static int IndexMatch(GraphDatatracker g[], int Ssize, double tobeMatchedNo)
 	{
 		for(int i = 0; i < Ssize; i++)
 		{
-			if(g[i].getMatchSum() == tobeMatchedNo)
-				return i;
+			if((0.5*g[i].getMatchSum()+0.5*g[i].getAudioMatchSum()) == tobeMatchedNo)
+				return i+1;
 		}
 		return -1;
 	}
-	
+
 	private static double findKthMax(List<Double> input, int k) {		
 
 		if (input != null && input.size() > 0) {

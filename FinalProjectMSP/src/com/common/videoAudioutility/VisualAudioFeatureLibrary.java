@@ -31,6 +31,7 @@ public class VisualAudioFeatureLibrary {
 		DMatchVectorVector matchesvector2 = new DMatchVectorVector();
 		double matchSum = 0;
 		double temp = 0;
+		int count = 0;
 		GraphDatatracker Graphdata = new GraphDatatracker(DatabaseVideo.TotalNoofFrames);
 		
 		for(int queryimage = 0; queryimage < Query.DescriptorList.size(); queryimage++)
@@ -43,7 +44,7 @@ public class VisualAudioFeatureLibrary {
 				matcher.knnMatch(descriptors2, descriptors1, matchesvector2, 2, null, true);
 				double m1 = ratioTest(matchesvector1);
 				double m2 = ratioTest(matchesvector2);
-				VFLDebug.DEBUG_PRINTLN(true, " ratiotest---------- "+m1+" "+m2);
+				VFLDebug.DEBUG_PRINTLN(false, " ratiotest---------- "+m1+" "+m2);
 				if(m1 < m2)
 					temp = FeatureWeight*m2/Query.KeypointCapacity.get(queryimage);
 				else
@@ -51,15 +52,16 @@ public class VisualAudioFeatureLibrary {
 				matchSum += temp;
 				 double matchValue=cvCompareHist(Query.HistogramValue.get(queryimage), DatabaseVideo.HistogramValue.get(databasevideo), CV_COMP_INTERSECT);
 				 matchSum += ColorbasedMatch*matchValue;
-				 VFLDebug.DEBUG_PRINTLN(true, " feature match "+temp);
-				 Graphdata.SetMatchdata(DatabaseVideo.Frametracker.get(databasevideo), temp + ColorbasedMatch*matchValue );
-				 
+				 temp+=ColorbasedMatch*matchValue;
+				 VFLDebug.DEBUG_PRINTLN(true, " Sum pushed "+temp);
+				 Graphdata.SetMatchdata(DatabaseVideo.Frametracker.get(databasevideo), temp);
+				 count++;
 			}
 		}
 		FingerprintSimilarityComputer fp = new FingerprintSimilarityComputer(Query.audioFeatureTracker, DatabaseVideo.audioFeatureTracker);
 		FingerprintSimilarity Audiosimilarity = fp.getFingerprintsSimilarity();
 		Graphdata.SetAudioMatch(Audiosimilarity.getSimilarity());
-		Graphdata.SetMatchSum(matchSum);	
+		Graphdata.SetMatchSum(matchSum/count);	
 		return Graphdata;
 	}
 	
