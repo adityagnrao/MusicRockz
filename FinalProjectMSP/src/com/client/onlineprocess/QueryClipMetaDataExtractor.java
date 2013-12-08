@@ -108,7 +108,7 @@ public class QueryClipMetaDataExtractor {
                 for(int i = 0; i < ExtractedMetadata.size(); i++)
                 {
                         graph.add(util.library.MatchVideoAudio(QueryVideo, ExtractedMetadata.get(i)));
-                        FinalListBuddy.add(0.91*graph.get(i).getMatchSum()+0.09*graph.get(i).getAudioMatchSum());
+                        FinalListBuddy.add(0.80*graph.get(i).getMatchSum()+0.20*graph.get(i).getAudioMatchSum());
                 }
                 
                 System.out.print("1st best match:"+IndexMatch(graph,ExtractedMetadata.size(),findKthMax(FinalListBuddy, 1))
@@ -217,7 +217,7 @@ public class QueryClipMetaDataExtractor {
         {
                 for(int i = 0; i < Ssize; i++)
                 {
-                        if((0.91*g.get(i).getMatchSum()+0.09*g.get(i).getAudioMatchSum()) == tobeMatchedNo)
+                        if((0.80*g.get(i).getMatchSum()+0.20*g.get(i).getAudioMatchSum()) == tobeMatchedNo)
                                 return i;
                 }
                 return -1;
