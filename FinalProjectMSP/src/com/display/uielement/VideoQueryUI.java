@@ -162,9 +162,9 @@ public class VideoQueryUI {
 			vfilename = query_name+".rgb";
 			queryname=query_name;
 		afilename =  query_name+".wav";
-		res_val.add(res[0]);
-		res_val.add(res[1]);
-		res_val.add(res[2]);
+		res_val.add(res[0]+" %");
+		res_val.add(res[1]+" %");
+		res_val.add(res[2]+" %");
 		
 		vlist=extractedMetadata;
 		QueryVideo=queryVideo2;
