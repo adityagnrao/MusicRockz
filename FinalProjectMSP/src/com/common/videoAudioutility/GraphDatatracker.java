@@ -35,7 +35,8 @@ public class GraphDatatracker {
 	
 	public void SetMatchdata(int frameID, double matchsum) {
 		// TODO Auto-generated method stub
-		this.MatchData[frameID] += matchsum;
+		if(this.MatchData[frameID] < matchsum)
+		this.MatchData[frameID] = matchsum;
 	}
 	
 	public void SetMatchSum(double matchsum) {

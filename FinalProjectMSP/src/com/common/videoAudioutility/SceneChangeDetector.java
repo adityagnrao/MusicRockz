@@ -22,8 +22,10 @@ public class SceneChangeDetector {
 	Debugger SceneDebug = new Debugger();
 	private static final int MAX_CORNERS = 500;
 	int r = 2;
-	double edgethreshold = 0.05;
-	int edgewindow = 10;
+//	double edgethreshold = 0.05;
+	double edgethreshold = 0.20;
+//	int edgewindow = 10;
+	int edgewindow = 30;
 	public SceneChangeDetector() {
 		// TODO Auto-generated constructor stub
 	}

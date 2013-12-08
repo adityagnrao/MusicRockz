@@ -19,8 +19,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-import org.opencv.core.CvType;
-import org.opencv.core.Mat;
+
 
 public class PixelArray {
 	
@@ -144,20 +143,5 @@ public class PixelArray {
 		return Math.sqrt((p1.i - p2.i)*(p1.i-p2.i) + (p1.j - p2.j)*(p1.j-p2.j));
 	}
 	
-	public Mat ConverttoMatfromBufferedImage(BufferedImage image)
-	{
-		byte[] pixels = ((DataBufferByte)image.getRaster().getDataBuffer()).getData();
 	
-		int rows = image.getWidth();
-        int cols = image.getHeight();
-        int type = CvType.CV_8UC3;
-        Mat newMat = new Mat(rows,cols,type);
-
-        for(int r=0; r<rows; r++){
-            for(int c=0; c<cols; c++){
-            	newMat.put(r, c, pixels);
-            }
-        }
-        return newMat;
-	}
 }
