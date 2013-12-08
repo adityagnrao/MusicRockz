@@ -168,6 +168,8 @@ class RPlayvideo extends VideoQueryUI implements Runnable {
 
 					// Audio ahead of video, roll video forward to catch up
 					while (i < Math.round(RplaySound.getPosition() / spf)) {
+						if(!RplaySound.getActive())
+							return;
 						if (result_video_pause == true) {
 							video_start=i;
 //							rplaySound.dataLine.stop();

@@ -126,13 +126,13 @@ public class QueryClipMetaDataExtractor {
                  * That is read the 3 best videos to be shown first
                  */
 		List<VideoAudioShot>ExtractedMeta = new ArrayList<VideoAudioShot>();
-		String tempstr[] = {"wreck4","wreck3","wreck2"};
+	//	String tempstr[] = {"wreck4","wreck3","wreck2"};
 		String result_value[] = {"1","2","3"};
 		
 		Integer x1;
 		for(int i = 0; i < 3; i++){
 			List<BufferedImage>Frames = new ArrayList<BufferedImage>();
-			x1=(int) (FinalListBuddy.get(i)*100);
+			x1=(int) (findKthMax(FinalListBuddy, i+1)*100);
 			result_value[i]=(x1).toString();
 			try {
                                 //File file = new File("Rsrc_d/"+tempstr[i]+".rgb");
